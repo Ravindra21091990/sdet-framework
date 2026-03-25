@@ -17,21 +17,23 @@ public class BaseTest {
     public void setup(){
 
         WebDriverManager.chromedriver().setup();
-        driver = new ChromeDriver();
 
         ChromeOptions options = new ChromeOptions();
-        options.addArguments("--headless");
+        options.addArguments("--headless=new");   // 🔥 updated headless
         options.addArguments("--no-sandbox");
         options.addArguments("--disable-dev-shm-usage");
+        options.addArguments("--window-size=1920,1080");
 
-        driver = new ChromeDriver(options);
-        driver.manage().window().maximize();
+        driver = new ChromeDriver(options); // ✅ ONLY ONE DRIVER
+
         driver.get(config.getProperty("url"));
+        System.out.println("Title: " + driver.getTitle());
     }
 
     @AfterMethod
     public void tearDown(){
-
-        driver.quit();
+        if (driver != null) {
+            driver.quit();
+        }
     }
 }

@@ -16,6 +16,7 @@ target/
 *.log
 *.class
 node_modules/
+allure-results/
 
 ### Eclipse ###
 .apt_generated
