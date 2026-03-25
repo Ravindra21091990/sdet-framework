@@ -3,6 +3,7 @@ name: Run Selenium Tests
 on:
   push:
     branches: [ "main" ]
+  pull_request:
 
 jobs:
   test:
@@ -18,5 +19,18 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Build & Run Tests
-        run: mvn clean test
+      - name: Install Maven
+        run: sudo apt-get update && sudo apt-get install -y maven
+
+      - name: Setup Chrome
+        uses: browser-actions/setup-chrome@v1
+
+      - name: Run Tests (Headless)
+        run: mvn clean test -Denv=ci
+
+      - name: Upload Test Reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: target/
