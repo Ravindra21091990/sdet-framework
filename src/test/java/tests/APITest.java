@@ -3,8 +3,10 @@ package tests;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.testng.Assert;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
+@Listeners(utils.TestListener.class)
 public class APITest {
 
     @Test

@@ -1,10 +1,11 @@
 package tests;
 
 import base.BaseTest;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
 import pages.GooglePage;
-
+@Listeners(utils.TestListener.class)
 public class SampleTest extends BaseTest {
 
     @Test(retryAnalyzer = utils.RetryAnalyzer.class)

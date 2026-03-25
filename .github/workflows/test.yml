@@ -25,9 +25,24 @@ jobs:
       - name: Setup Chrome
         uses: browser-actions/setup-chrome@v1
 
+      # 🔥 Run Tests
       - name: Run Tests (Headless)
         run: mvn clean test -Denv=ci
 
+      # 🔥 Generate Allure Report
+      - name: Generate Allure Report
+        if: always()
+        run: mvn allure:report
+
+      # 🔥 Upload Allure Report
+      - name: Upload Allure Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-report
+          path: target/site/allure-maven-plugin/
+
+      # (Optional) Keep raw test results too
       - name: Upload Test Reports
         if: always()
         uses: actions/upload-artifact@v4
