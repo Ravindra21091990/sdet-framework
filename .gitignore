@@ -9,6 +9,7 @@ target/
 .idea/jarRepositories.xml
 .idea/compiler.xml
 .idea/libraries/
+.idea/inspectionProfiles/
 *.iws
 *.iml
 *.ipr
@@ -17,6 +18,7 @@ target/
 *.class
 node_modules/
 allure-results/
+.allure/
 
 ### Eclipse ###
 .apt_generated
