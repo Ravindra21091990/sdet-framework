@@ -9,6 +9,15 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    # ✅ ADD THIS BLOCK (VERY IMPORTANT)
+    services:
+      selenium:
+        image: selenium/standalone-chrome:4.18.1
+        ports:
+          - 4444:4444
+        options: >-
+          --shm-size="2g"
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
@@ -22,8 +31,18 @@ jobs:
       - name: Install Maven
         run: sudo apt-get update && sudo apt-get install -y maven
 
-      - name: Setup Chrome
-        uses: browser-actions/setup-chrome@v1
+      # ❌ REMOVE THIS (not needed with Grid)
+      # - name: Setup Chrome
+      #   uses: browser-actions/setup-chrome@v1
+
+      # ✅ Wait for Selenium Grid
+      - name: Wait for Selenium
+        run: |
+          echo "Waiting for Selenium to be ready..."
+          for i in {1..30}; do
+            curl -s http://localhost:4444/wd/hub/status | grep -q '"ready": true' && break
+            sleep 2
+          done
 
       # 🔥 Run Tests
       - name: Run Tests (Headless)
@@ -42,7 +61,6 @@ jobs:
           name: allure-report
           path: target/site/allure-maven-plugin/
 
-      # (Optional) Keep raw test results too
       - name: Upload Test Reports
         if: always()
         uses: actions/upload-artifact@v4

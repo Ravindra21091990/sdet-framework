@@ -2,17 +2,21 @@ package base;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import utils.ConfigReader;
-import org.openqa.selenium.remote.RemoteWebDriver;
 
 import java.net.URL;
 
-
 public class BaseTest {
 
-    public WebDriver driver;
+    private static ThreadLocal<WebDriver> driver = new ThreadLocal<>();
+
+    public WebDriver getDriver() {
+        return driver.get();
+    }
+
     ConfigReader config = new ConfigReader();
 
     @BeforeMethod
@@ -24,13 +28,16 @@ public class BaseTest {
             options.addArguments("--no-sandbox");
             options.addArguments("--disable-dev-shm-usage");
 
-            driver = new RemoteWebDriver(
+            // ✅ Correct way
+            WebDriver remoteDriver = new RemoteWebDriver(
                     new URL("http://localhost:4444/wd/hub"),
                     options
             );
 
-            driver.manage().window().maximize();
-            driver.get(config.getProperty("url"));
+            driver.set(remoteDriver);
+
+            getDriver().manage().window().maximize();
+            getDriver().get(config.getProperty("url"));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -39,8 +46,9 @@ public class BaseTest {
 
     @AfterMethod
     public void tearDown(){
-        if (driver != null) {
-            driver.quit();
+        if (getDriver() != null) {
+            getDriver().quit();
+            driver.remove(); // ✅ very important for parallel execution
         }
     }
 }
