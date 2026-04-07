@@ -1,18 +1,20 @@
 package utils;
 
-import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.Properties;
 
 public class ConfigReader {
 
-    Properties prop;
+    private final Properties prop;
 
     public ConfigReader(){
         try{
-
-            FileInputStream fis = new FileInputStream("src/test/resources/config.properties");
             prop = new Properties();
-            prop.load(fis);
+            InputStream inputStream = getClass().getClassLoader().getResourceAsStream("config.properties");
+            if (inputStream == null) {
+                throw new RuntimeException("Unable to load config.properties from classpath");
+            }
+            prop.load(inputStream);
         } catch (Exception e) {
 
             throw new RuntimeException(e);
@@ -21,6 +23,6 @@ public class ConfigReader {
 
     public String getProperty(String key){
 
-        return prop.getProperty(key);
+        return System.getProperty(key, prop.getProperty(key));
     }
 }

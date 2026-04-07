@@ -13,20 +13,24 @@ public class TestListener implements ITestListener {
     @Override
     public void onTestFailure(ITestResult result) {
 
-        // ✅ Get current test instance
         Object testClass = result.getInstance();
+        if (!(testClass instanceof BaseTest)) {
+            return;
+        }
 
-        // ✅ Cast to BaseTest
         BaseTest base = (BaseTest) testClass;
-
-        // ✅ Get driver using getter (ThreadLocal safe)
         WebDriver driver = base.getDriver();
+        if (driver == null) {
+            return;
+        }
 
-        // ✅ Capture screenshot
-        byte[] screenshot = ScreenshotUtil.captureScreenshot(driver);
-
-        // ✅ Attach to Allure
-        Allure.addAttachment("Failure Screenshot",
-                new ByteArrayInputStream(screenshot));
+        try {
+            byte[] screenshot = ScreenshotUtil.captureScreenshot(driver);
+            if (screenshot.length > 0) {
+                Allure.addAttachment("Failure Screenshot", new ByteArrayInputStream(screenshot));
+            }
+        } catch (Exception ignored) {
+            // Do not override root test failure with listener errors.
+        }
     }
 }

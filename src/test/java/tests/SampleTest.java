@@ -26,15 +26,18 @@ public class SampleTest extends BaseTest {
     }
 
     @Test
-    public void verifySearchFunctionality() throws InterruptedException {
+    public void verifySearchFunctionality() {
 
         System.out.println("executing verifySearchFunctionality");
 
         // ✅ FIXED: pass driver correctly
         GooglePage googlePage = new GooglePage(getDriver());
+        SoftAssert softAssert = new SoftAssert();
 
         googlePage.enterSearchText("SDET framework");
+        String typedValue = googlePage.getSearchBoxValue();
+        softAssert.assertEquals(typedValue, "SDET framework");
 
-        Thread.sleep(2000);
+        softAssert.assertAll();
     }
 }

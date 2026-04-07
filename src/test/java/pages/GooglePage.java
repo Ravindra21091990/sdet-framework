@@ -29,4 +29,11 @@ public class GooglePage {
 
         element.sendKeys(searchString);
     }
+
+    public String getSearchBoxValue() {
+        WebElement element = wait.until(
+                ExpectedConditions.visibilityOfElementLocated(searchBox)
+        );
+        return element.getAttribute("value");
+    }
 }
